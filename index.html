@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.0.0-alpha.1/axios.min.js"
+        integrity="sha512-xIPqqrfvUAc/Cspuj7Bq0UtHNo/5qkdyngx6Vwt+tmbvTLDszzXM0G6c91LXmGrRx8KEPulT+AfOOez+TeVylg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <title>Document</title>
+</head>
+<body>
+
+<script>
+
+
+let example = {
+    m_shop: "1693221230",
+    m_orderid: "12345",
+    m_amount: "150.00",
+    m_curr: "USD",
+    m_desc: btoa("Test"),
+    m_key : "12345" // 515100
+}
+
+
+    function hash(string) {
+        const utf8 = new TextEncoder().encode(string);
+        return crypto.subtle.digest('SHA-256', utf8).then((hashBuffer) => {
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray
+                .map((bytes) => bytes.toString(16).padStart(2, '0'))
+                .join('');
+            return hashHex;
+        });
+    }
+
+
+let sendRequest = (obj)=>{
+      let params = "";
+        Object.keys(obj).forEach(key=> params +=`${key}=${obj[key]}&`)
+        console.log(`https://payeer.com/merchant/?${params}`);
+        let url  =  `https://payeer.com/merchant/?${params}`;
+        fetch(url , {
+            method : "POST",
+            cors : "no-cors"
+        })
+     .then((response) => {
+                return response.json();
+            })
+            .then((data) => {
+                console.log("data" , data);
+            });
+}
+
+
+let arr =  Object.values(example) ;
+   let result =    hash(arr.join(":")).then(res=>{
+       example.m_sign =  res.toUpperCase();
+
+       document.body.insertAdjacentHTML('beforeend', `<form method="post" action="https://payeer.com/merchant/">
+           <input type = "hidden" name = "m_shop" value = "${example.m_shop}" >
+           <input type="hidden" name="m_orderid" value="${example.m_orderid}">
+               <input type="hidden" name="m_amount" value="${example.m_amount}">
+                   <input type="hidden" name="m_curr" value="${example.m_curr}">
+                       <input type="hidden" name="m_desc" value="${example.m_desc}">
+                           <input type="hidden" name="m_sign" value="${example.m_sign}">
+                               <input type="submit" name="m_process" value="sendAAAAA" />
+                           </form>`);
+   });
+
+
+    </script>
+    
+</body>
+</html>
