@@ -18,11 +18,11 @@
 
 
 let example = {
-    m_shop: "1693221230",
+    m_shop: "1693427769",
     m_orderid: "12345",
-    m_amount: "150.00",
+    m_amount: "121.00",
     m_curr: "USD",
-    m_desc: btoa("Test"),
+    m_desc: btoa("Test121"),
     m_key : "12345" // 515100
 }
 
@@ -68,7 +68,7 @@ let arr =  Object.values(example) ;
                    <input type="hidden" name="m_curr" value="${example.m_curr}">
                        <input type="hidden" name="m_desc" value="${example.m_desc}">
                            <input type="hidden" name="m_sign" value="${example.m_sign}">
-                               <input type="submit" name="m_process" value="sendAAAAA" />
+                               <input type="submit" name="m_process" value="sendTestRequest" />
                            </form>`);
    });
 
